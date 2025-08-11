@@ -1,0 +1,114 @@
+---
+title: "analyze.Rmd"
+output: html_document
+date: "2025-08-07"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(readxl)
+library(ggplot2)
+library(scales)
+library(forcats)
+library(here)
+```
+
+## Read Data
+```{r load data}
+data1 <- readRDS("~/Desktop/ra-bootcamp-warmup/Assignment 1/data/cleaned/absence_cleaned.rds")
+```
+
+
+## 📈 図2：**不登校割合の推移（折れ線 + 数値付き）**
+```{r summarise}
+
+summary_rate <- data1 %>%
+  group_by(year) %>%
+  summarise(
+    total_absent = sum(absencestudents, na.rm = TRUE),
+    total_students = sum(students, na.rm = TRUE),
+    total_rate = total_absent / total_students * 100
+  )
+summary_rate <- summary_rate %>%
+  mutate(total_rate = round(total_rate, 1))
+summary_rate <- summary_rate %>%
+ mutate(total_absent_per_10k = total_absent / 10000)
+```
+
+## Graph1
+```{r fig1, echo=FALSE}
+ggplot(summary_rate, aes(x = factor(year), y = total_absent_per_10k)) +
+    geom_col(fill = "steelblue") +
+    labs(title = "図1：合計不登校者数の推移", x = "年度", y = "不登校者数") +
+    theme_minimal(base_family = "Hiragino Sans")
+```
+
+
+## Graph2
+```{r fig2, echo=FALSE}
+ggplot(summary_rate, aes(x = year, y = total_rate)) +
+  geom_line(color = "darkred") +
+  geom_point() +
+  geom_text(aes(label = round(total_rate, 2)), vjust = -1) +
+  scale_x_continuous(
+    name = "年度",
+    breaks = seq(2013, 2022, by = 1)
+  ) +
+  labs(title = "図2：不登校割合の推移", x = "年度", y = "不登校割合（%）") +
+  theme_minimal(base_family = "Hiragino Sans")
+```
+
+## Graph3
+```{r fig3, echo=FALSE}
+ggplot(summary_rate, aes(x = year)) +
+  geom_col(aes(y = total_absent_per_10k), fill = "skyblue") +
+  geom_line(aes(y = total_rate * 2.5), color = "red", size = 1.2) +
+  scale_y_continuous(
+    name = "不登校者数",
+    sec.axis = sec_axis(~ ./2.5, name = "不登校割合（%）")
+  ) +
+  scale_x_continuous(
+    name = "年度",
+    breaks = seq(2013, 2022, by = 1)
+  ) +
+  labs(title = "図3：不登校者数と割合の推移") +
+  theme_minimal(base_family = "Hiragino Sans")
+```
+
+## Graph4
+```{r fig4}
+absence_2022 <- data1 %>% filter(year == 2022)
+absence_2022 <- absence_2022 %>%
+ mutate(total_rate = absence_rate * 100)
+
+ggplot(absence_2022, aes(x = total_rate)) +
+  geom_histogram(binwidth = 0.5, fill = "lightblue", color = "black") +
+  geom_vline(aes(xintercept = mean(total_rate, na.rm = TRUE)),
+             linetype = "dashed", color = "red", size = 1) +
+  labs(title = "図4：2022年 不登校割合の分布",
+       x = "不登校割合（%）",
+       y = "都道府県数") +
+  theme_minimal(base_family = "Hiragino Sans")
+```
+
+## Graph5
+```{r fig5}
+my_favorite <- "京都"  # 好きな場所に変更
+
+absence_2022kyoto <- absence_2022 %>%
+  mutate(prefecture = fct_reorder(prefecture, absence_rate),
+         color_group = if_else(prefecture == "京都", "favorite", "other"))
+
+ggplot(absence_2022kyoto, 
+       aes(x = fct_reorder(prefecture, total_rate), 
+           y = total_rate, 
+           fill = color_group)) +  
+  geom_col() +
+  coord_flip() +
+  scale_fill_manual(values = c("favorite" = "pink", "other" = "gray")) +
+  labs(title = "図5：2022年 不登校割合）", 
+       x = "都道府県", 
+       y = "不登校割合（%）") +
+  theme_minimal(base_family = "Hiragino Sans") +
+  theme(legend.position = "none") 
+```
