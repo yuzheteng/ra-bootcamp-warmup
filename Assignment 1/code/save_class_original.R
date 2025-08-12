@@ -1,7 +1,7 @@
 library(tidyverse)
 library(readxl)
 
-# Read data
+# Read Data
 file_list <- list.files("Desktop/ra-bootcamp-warmup/Assignment 1/data/raw/学級数", pattern = "\\.xlsx$",  full.names = TRUE)
 class_list <- map(file_list, read_excel)
 
@@ -15,5 +15,5 @@ rename_columns <- function(df) {
 
 class_list <- map(class_list, rename_columns)
 
-#save data
+#Save Data
 saveRDS(class_list, file = "Desktop/ra-bootcamp-warmup/Assignment 1/data/original/class_cleaned_df.rds")

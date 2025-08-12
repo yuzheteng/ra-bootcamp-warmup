@@ -1,5 +1,5 @@
 ---
-title: "analyze.Rmd"
+title: "Assignment 1"
 output: html_document
 date: "2025-08-07"
 ---
@@ -19,7 +19,7 @@ data1 <- readRDS("~/Desktop/ra-bootcamp-warmup/Assignment 1/data/cleaned/absence
 ```
 
 
-## 📈 図2：**不登校割合の推移（折れ線 + 数値付き）**
+##Preparing
 ```{r summarise}
 
 summary_rate <- data1 %>%
@@ -76,7 +76,7 @@ ggplot(summary_rate, aes(x = year)) +
 ```
 
 ## Graph4
-```{r fig4}
+```{r fig4, echo=FALSE}
 absence_2022 <- data1 %>% filter(year == 2022)
 absence_2022 <- absence_2022 %>%
  mutate(total_rate = absence_rate * 100)
@@ -92,8 +92,8 @@ ggplot(absence_2022, aes(x = total_rate)) +
 ```
 
 ## Graph5
-```{r fig5}
-my_favorite <- "京都"  # 好きな場所に変更
+```{r fig5, echo=FALSE}
+my_favorite <- "京都"  
 
 absence_2022kyoto <- absence_2022 %>%
   mutate(prefecture = fct_reorder(prefecture, absence_rate),
@@ -112,3 +112,6 @@ ggplot(absence_2022kyoto,
   theme_minimal(base_family = "Hiragino Sans") +
   theme(legend.position = "none") 
 ```
+
+## Opinion
+コロナ後に不登校の増加が明らかになったが、それを単純にコロナ禍のせいだと断言することはできない。社会環境の変化や親の教育方法の不適切さなど、複雑な背景があることは間違いない。したがって、このような社会問題がさらに悪化する前に、より一層の研究が必要である。

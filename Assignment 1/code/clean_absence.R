@@ -1,7 +1,7 @@
 library(tidyverse)
 library(readxl)
 
-#cleaning
+#Read Data for Cleaning
 absence_list <- readRDS("Desktop/ra-bootcamp-warmup/Assignment 1/data/original/schoolrefusal_df.rds")
 if (is.null(names(absence_list)) || any(names(absence_list) == "")) { names(absence_list) <- as.character(2013:2022)}
 
@@ -11,7 +11,7 @@ absence_cleaned <- absence_list %>%
   map(~ .x %>%
         # blank列の削除
         select(-blank) %>%
-        # 文字列列を文字列型に、数値列を数値型に変換（必要に応じて）
+        # 文字列列を文字列型に、数値列を数値型に変換
         mutate(
           prefecture = as.character(prefecture),
           absencestudents = as.numeric(absencestudents)

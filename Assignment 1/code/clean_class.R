@@ -7,7 +7,7 @@ library(dplyr)
 library(purrr)
 library(janitor)
 
-#read data
+#Read Data
 class_list <- readRDS("Desktop/ra-bootcamp-warmup/Assignment 1/data/original/class_cleaned_df.rds")
 
 # 和暦（平成・令和）を西暦に変換する関数
@@ -24,7 +24,7 @@ convert_wareki_to_ad <- function(wareki_str) {
     return(as.character(2018 + year_num))}
   return(wareki_str)}
 
-# まず名前がなければ名前をつける（必須）
+
 if(is.null(names(class_list))) {
   names(class_list) <- paste0("df", seq_along(class_list))}
 # 西暦名を取得してリスト名にセット
@@ -98,10 +98,8 @@ class_sizes[num_cols] <- as.numeric(num_cols)
 # 幅のある列は中央値計算
 class_sizes[range_cols] <- sapply(range_cols, calc_midpoint)
 
-# 5. 全ての対象列名の学級数（代表値）ベクトルが完成
-# これを元に、各行の学級数×学校数を計算する
 
-# 6. pivot_longerでlong形式にして計算する方法
+#pivot_longerでlong形式にして計算する方法
 
 all_long <- all_df %>%
   pivot_longer(
@@ -118,7 +116,7 @@ all_long <- all_df %>%
     class_school = class_size * school_count
   )
 
-# 7. 年・都道府県ごとに合計
+#年・都道府県ごとに合計
 
 summary_df <- all_long %>%
   group_by(year, prefecture, pref_code) %>%  # pref_codeもグループに含める
