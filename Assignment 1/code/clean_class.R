@@ -129,4 +129,5 @@ summary_df <- all_long %>%
   mutate(year = as.numeric(year)) %>%
   arrange(pref_code, year) 
 
-
+#save data
+saveRDS(summary_df, file = "Desktop/ra-bootcamp-warmup/Assignment 1/data/cleaned/class_cleaned.rds")
